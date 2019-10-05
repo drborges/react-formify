@@ -1,20 +1,18 @@
 import React, { useState, useContext, useEffect } from "react";
 import ReactDOM from "react-dom";
 
-import { Button, Form, FormContext, InputText } from "./simpler-form";
+import { Button, Form, useForm, InputText } from "./simpler-form";
 
 const FormFields = ({ todos }) => {
   const [error, setError] = useState()
-  const formData = useContext(FormContext)
-
-  console.log(">>>> before mounting")
+  const { data } = useForm()
 
   useEffect(() => {
-    if (formData.name === "Diego") {
+    if (data.name === "Diego") {
       setError("Name cannot be 'Diego'")
       console.log(">>>> after mounting")
     }
-  }, formData)
+  })
 
   return (
     <>
@@ -50,6 +48,8 @@ const FormFields = ({ todos }) => {
           <InputText name="city" defaultValue="Porto Alegre" />
         </Form.Scope>
       </div>
+
+      <Button onClick={() => setError("ANOTHER ERROR!")}>Boom!</Button>
     </>
   )
 }

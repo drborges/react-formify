@@ -1,26 +1,37 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 export const FormContext = React.createContext({});
 
+export const useForm = () => {
+  const data = useContext(FormContext)
+  return {
+    data
+  }
+}
+
 const Scope = ({ children, name, list }) => {
-  const scope = list ? [] : {};
   const parentScope = useContext(FormContext);
+  
   if (!parentScope[name]) {
-    parentScope[name] = scope;
+    parentScope[name] = list ? [] : {};
   }
 
-  return <FormContext.Provider value={scope}>{children}</FormContext.Provider>;
+  return (
+    <FormContext.Provider value={parentScope[name]}>
+      {children}
+    </FormContext.Provider>
+  );
 };
 
 const Form = ({ children, onSubmit, ...props }) => {
-  const formData = {};
+  const data = {};
   const handleSubmit = event => {
     event.preventDefault();
-    onSubmit(formData);
+    onSubmit(data);
   };
 
   return (
-    <FormContext.Provider value={formData}>
+    <FormContext.Provider value={data}>
       <form {...props} onSubmit={handleSubmit}>
         {children}
       </form>
