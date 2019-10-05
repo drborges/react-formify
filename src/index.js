@@ -18,22 +18,22 @@ const useSwappable = initialList => {
   ];
 };
 
-const FormFields = ({ todos, onSwap }) => {
+const FormFields = ({ name, email, active, address, todos, onSwap }) => {
   return (
     <>
       <div>
         <label>Name: </label>
-        <InputText name="name" defaultValue="Diego" />
+        <InputText name="name" defaultValue={name} />
       </div>
 
       <div>
         <label>Email: </label>
-        <InputText name="email" defaultValue="drborges.cic@gmail.com" />
+        <InputText name="email" defaultValue={email} />
       </div>
 
       <div>
         <label>Active: </label>
-        <InputCheck name="active" defaultValue={true} />
+        <InputCheck name="active" defaultValue={active} />
       </div>
 
       <div>
@@ -51,8 +51,8 @@ const FormFields = ({ todos, onSwap }) => {
       <div>
         <label>Address:</label>
         <Form.Scope name="address">
-          <InputText name="street" defaultValue="Mario Antunes da Cunha" />
-          <InputText name="city" defaultValue="Porto Alegre" />
+          <InputText name="street" defaultValue={address.street} />
+          <InputText name="city" defaultValue={address.city} />
         </Form.Scope>
       </div>
 
@@ -62,13 +62,22 @@ const FormFields = ({ todos, onSwap }) => {
 };
 
 function App() {
-  const data = [
-    { id: 1, text: "Walk the dog", state: "done" },
-    { id: 2, text: "Do the dishes", state: "todo" },
-    { id: 3, text: "Clean the house", state: "doing" }
-  ];
+  const form = {
+    name: "Diego",
+    email: "drborges.cic@gmail.com",
+    active: true,
+    address: {
+      street: "Walnut St.",
+      city: "Philly"
+    },
+    todos: [
+      { id: 1, text: "Walk the dog", state: "doing" },
+      { id: 2, text: "Do the dishes", state: "done" },
+      { id: 3, text: "Clean the house", state: "todo" }
+    ]
+  };
 
-  const [todos, swap] = useSwappable(data);
+  const [todos, swap] = useSwappable(form.todos);
 
   const handleSwap = () => {
     swap(0, 1);
@@ -81,7 +90,7 @@ function App() {
   return (
     <div className="App">
       <Form onSubmit={handleSubmit}>
-        <FormFields todos={todos} onSwap={handleSwap} />
+        <FormFields {...form} todos={todos} onSwap={handleSwap} />
         <Button type="submit">Save</Button>
       </Form>
     </div>
