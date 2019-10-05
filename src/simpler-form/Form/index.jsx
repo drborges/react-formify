@@ -1,17 +1,17 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 
 export const FormContext = React.createContext({});
 
 export const useForm = () => {
-  const data = useContext(FormContext)
+  const data = useContext(FormContext);
   return {
     data
-  }
-}
+  };
+};
 
 const Scope = ({ children, name, list }) => {
   const parentScope = useContext(FormContext);
-  
+
   if (!parentScope[name]) {
     parentScope[name] = list ? [] : {};
   }

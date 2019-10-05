@@ -1,24 +1,30 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
-import { Button, Form, useForm, InputText } from "./simpler-form";
+import { Button, Form, InputText } from "./simpler-form";
 
-const FormFields = ({ todos }) => {
-  const [error, setError] = useState()
-  const { data } = useForm()
+const useSwappable = initialList => {
+  const [list, setList] = useState(initialList);
 
-  useEffect(() => {
-    if (data.name === "Diego") {
-      setError("Name cannot be 'Diego'")
-      console.log(">>>> after mounting")
+  return [
+    list,
+    (i, j) => {
+      const newList = [...list];
+      const item = newList[i];
+      newList[i] = newList[j];
+      newList[j] = item;
+      setList(newList);
     }
-  })
+  ];
+};
 
+const FormFields = ({ todos, onSwap }) => {
+  const [error, setError] = useState();
+
+  console.log(">>>> rendering");
   return (
     <>
-      {error && (
-        <div>{error}</div>
-      )}
+      {error && <div>{error}</div>}
       <div>
         <label>Name: </label>
         <InputText name="name" defaultValue="Diego" />
@@ -33,7 +39,7 @@ const FormFields = ({ todos }) => {
         <label>Todos:</label>
         <Form.Scope name="todos" list>
           {todos.map((todo, i) => (
-            <div>
+            <div key={todo.id}>
               <InputText index={i} name="text" defaultValue={todo.text} />
               <InputText index={i} name="state" defaultValue={todo.state} />
             </div>
@@ -49,41 +55,37 @@ const FormFields = ({ todos }) => {
         </Form.Scope>
       </div>
 
-      <Button onClick={() => setError("ANOTHER ERROR!")}>Boom!</Button>
+      <Button onClick={onSwap}>Swap!</Button>
     </>
-  )
-}
+  );
+};
 
 function App() {
-  const todos = [
+  const data = [
     { id: 1, text: "Walk the dog", state: "done" },
     { id: 2, text: "Do the dishes", state: "todo" },
     { id: 3, text: "Clean the house", state: "doing" }
   ];
 
+  const [todos, swap] = useSwappable(data);
+
+  const handleSwap = () => {
+    swap(0, 1);
+  };
+
   const handleSubmit = data => {
-    console.log(">>>>>", data);
+    console.log("Submit", data);
   };
 
   return (
     <div className="App">
       <Form onSubmit={handleSubmit}>
-        <FormFields todos={todos} />
+        <FormFields todos={todos} onSwap={handleSwap} />
         <Button type="submit">Save</Button>
       </Form>
     </div>
   );
 }
-
-/**
- * {
- *  name: "asdasd",
- *  email: "asdasd",
- *  todos: [
- *    { text: "asdasd", state: "asdasd"}
- * ]
- * }
- */
 
 const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);
