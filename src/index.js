@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
-import { Button, Form, InputText } from "./simpler-form";
+import { Button, Form, InputText, InputCheck } from "./simpler-form";
 
 const useSwappable = initialList => {
   const [list, setList] = useState(initialList);
@@ -19,12 +19,8 @@ const useSwappable = initialList => {
 };
 
 const FormFields = ({ todos, onSwap }) => {
-  const [error, setError] = useState();
-
-  console.log(">>>> rendering");
   return (
     <>
-      {error && <div>{error}</div>}
       <div>
         <label>Name: </label>
         <InputText name="name" defaultValue="Diego" />
@@ -33,6 +29,11 @@ const FormFields = ({ todos, onSwap }) => {
       <div>
         <label>Email: </label>
         <InputText name="email" defaultValue="drborges.cic@gmail.com" />
+      </div>
+
+      <div>
+        <label>Active: </label>
+        <InputCheck name="active" defaultValue={true} />
       </div>
 
       <div>

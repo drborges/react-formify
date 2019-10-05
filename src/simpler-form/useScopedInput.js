@@ -20,7 +20,8 @@ const useScopedInput = (name, index, defaultValue) => {
 
   return {
     value,
-    onChange: e => setValue(e.target.value)
+    onChange: e =>
+      setValue(e.target.type === "checkbox" ? e.target.checked : e.target.value)
   };
 };
 
