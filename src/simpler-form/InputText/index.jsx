@@ -1,30 +1,16 @@
 import React, { useContext, useState } from "react";
 
+import { useScopedInput } from "../useScopedInput"
 import { FormContext } from "../Form";
 
 const InputText = ({ inputRef, name, index, defaultValue, ...props }) => {
-  const [value, setValue] = useState(defaultValue);
-  const parentScope = useContext(FormContext);
-
-  if (index !== undefined) {
-    if (!parentScope[index]) {
-      parentScope[index] = {};
-    }
-    parentScope[index][name] = value;
-  } else {
-    if (!parentScope[name]) {
-      parentScope[name] = {};
-    }
-    parentScope[name] = value;
-  }
-
+  const input = useScopedInput(name, index, defaultValue)
   return (
     <input
       {...props}
+      {...input}
       type="text"
       ref={inputRef}
-      value={value}
-      onChange={e => setValue(e.target.value)}
     />
   );
 };
