@@ -30,13 +30,14 @@ const useSwappable = initialList => {
 const onlyLetters = value => value.replace(/\d/, "");
 
 const FormFields = ({ name, email, active, address, todos, onSwap }) => {
-  const data = useForm();
+  const { values, prestine } = useForm();
   const handleNext = () => {
-    console.log(">>>> NEXT: ", data);
+    console.log(">>>> NEXT: ", values);
   };
 
   return (
     <>
+      {prestine && <div>Form is prestine!</div>}
       <div>
         <label>Name: </label>
         <InputText

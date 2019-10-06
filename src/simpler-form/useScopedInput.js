@@ -2,27 +2,29 @@ import { useContext, useState } from "react";
 
 import { FormContext } from "./Form";
 
+const applyFilters = (value, filters) => {
+  return filters.reduce((result, filter) => filter(result), value);
+};
+
+const applyValidators = (value, validators, setValidating, setError) => {
+  if (validators.length > 0) {
+    setValidating(true);
+  }
+
+  Promise.all(validators.map(validator => validator(value)))
+    .then(() => setError(null))
+    .catch(setError)
+    .then(() => setValidating(false));
+};
+
 const useScopedInput = (name, defaultValue, filters = [], validators = []) => {
-  const parentScope = useContext(FormContext);
+  const { values, onTouched } = useContext(FormContext);
   const [value, setValue] = useState(defaultValue);
   const [prestine, setPrestine] = useState(true);
   const [error, setError] = useState();
   const [validating, setValidating] = useState(false);
-  const applyFilters = value =>
-    filters.reduce((result, filter) => filter(result), value);
 
-  const applyValidators = (value, validators) => {
-    if (validators.length > 0) {
-      setValidating(true);
-    }
-
-    Promise.all(validators.map(validator => validator(value)))
-      .then(() => setError(null))
-      .catch(setError)
-      .then(() => setValidating(false));
-  };
-
-  parentScope[name] = value;
+  values[name] = value;
 
   const input = {
     value,
@@ -30,10 +32,11 @@ const useScopedInput = (name, defaultValue, filters = [], validators = []) => {
       const currentValue =
         e.target.type === "checkbox" ? e.target.checked : e.target.value;
 
-      const newValue = applyFilters(currentValue);
+      const newValue = applyFilters(currentValue, filters);
       setValue(newValue);
       setPrestine(false);
-      applyValidators(newValue, validators);
+      onTouched();
+      applyValidators(newValue, validators, setValidating, setError);
     }
   };
 
