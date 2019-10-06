@@ -6,7 +6,7 @@ import "./styles.css";
 import {
   Button,
   Form,
-  useForm,
+  useScope,
   InputText,
   InputCheck,
   validators
@@ -30,14 +30,15 @@ const useSwappable = initialList => {
 const onlyLetters = value => value.replace(/\d/, "");
 
 const FormFields = ({ name, email, active, address, todos, onSwap }) => {
-  const { values, prestine } = useForm();
+  const { values, prestine } = useScope();
   const handleNext = () => {
-    console.log(">>>> NEXT: ", values);
+    console.log(">>>> NEXT: ", values.address.city);
   };
 
   return (
     <>
       {prestine && <div>Form is prestine!</div>}
+      {!prestine && <div>Form is no longer prestine!</div>}
       <div>
         <label>Name: </label>
         <InputText
@@ -121,7 +122,7 @@ function App() {
 
   return (
     <div className="App">
-      <Form onSubmit={handleSubmit} disabled={submitting}>
+      <Form name="my_form" onSubmit={handleSubmit} disabled={submitting}>
         <FormFields {...form} todos={todos} onSwap={handleSwap} />
         <Button type="submit" disabled={submitting}>
           Save

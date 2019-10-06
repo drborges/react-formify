@@ -1,4 +1,4 @@
-import Form, { FormContext, useForm } from "./Form";
+import Form, { useScope } from "./Form";
 import InputText from "./InputText";
 import InputNumber from "./InputNumber";
 import InputCheck from "./InputCheck";
@@ -9,8 +9,7 @@ import validators, { validate } from "./validation";
 
 export {
   Form,
-  FormContext,
-  useForm,
+  useScope,
   InputCheck,
   InputText,
   InputNumber,

@@ -1,6 +1,5 @@
-import { useContext, useState } from "react";
-
-import { FormContext } from "./Form";
+import { useState } from "react";
+import { useScope } from "./Form";
 
 const applyFilters = (value, filters) => {
   return filters.reduce((result, filter) => filter(result), value);
@@ -18,7 +17,8 @@ const applyValidators = (value, validators, setValidating, setError) => {
 };
 
 const useScopedInput = (name, defaultValue, filters = [], validators = []) => {
-  const { values, onTouched } = useContext(FormContext);
+  const { values, onTouch } = useScope();
+
   const [value, setValue] = useState(defaultValue);
   const [prestine, setPrestine] = useState(true);
   const [error, setError] = useState();
@@ -35,8 +35,8 @@ const useScopedInput = (name, defaultValue, filters = [], validators = []) => {
       const newValue = applyFilters(currentValue, filters);
       setValue(newValue);
       setPrestine(false);
-      onTouched();
       applyValidators(newValue, validators, setValidating, setError);
+      onTouch();
     }
   };
 
