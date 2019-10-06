@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
-import { Button, Form, InputText, InputCheck } from "./simpler-form";
+import "./styles.css";
+
+import {
+  Button,
+  Form,
+  useForm,
+  InputText,
+  InputCheck,
+  validators
+} from "./simpler-form";
 
 const useSwappable = initialList => {
   const [list, setList] = useState(initialList);
@@ -18,12 +27,24 @@ const useSwappable = initialList => {
   ];
 };
 
+const onlyLetters = value => value.replace(/\d/, "");
+
 const FormFields = ({ name, email, active, address, todos, onSwap }) => {
+  const data = useForm();
+  const handleNext = () => {
+    console.log(">>>> NEXT: ", data);
+  };
+
   return (
     <>
       <div>
         <label>Name: </label>
-        <InputText name="name" defaultValue={name} />
+        <InputText
+          name="name"
+          defaultValue={name}
+          filters={[onlyLetters]}
+          validators={[validators.required()]}
+        />
       </div>
 
       <div>
@@ -41,8 +62,10 @@ const FormFields = ({ name, email, active, address, todos, onSwap }) => {
         <Form.Scope name="todos" list>
           {todos.map((todo, i) => (
             <div key={todo.id}>
-              <InputText index={i} name="text" defaultValue={todo.text} />
-              <InputText index={i} name="state" defaultValue={todo.state} />
+              <Form.Scope name={i}>
+                <InputText name="text" defaultValue={todo.text} />
+                <InputText name="state" defaultValue={todo.state} />
+              </Form.Scope>
             </div>
           ))}
         </Form.Scope>
@@ -56,27 +79,33 @@ const FormFields = ({ name, email, active, address, todos, onSwap }) => {
         </Form.Scope>
       </div>
 
-      <Button onClick={onSwap}>Swap!</Button>
+      <Button type="button" onClick={onSwap}>
+        Swap!
+      </Button>
+      <Button type="button" onClick={handleNext}>
+        Next >
+      </Button>
     </>
   );
 };
 
-function App() {
-  const form = {
-    name: "Diego",
-    email: "drborges.cic@gmail.com",
-    active: true,
-    address: {
-      street: "Walnut St.",
-      city: "Philly"
-    },
-    todos: [
-      { id: 1, text: "Walk the dog", state: "doing" },
-      { id: 2, text: "Do the dishes", state: "done" },
-      { id: 3, text: "Clean the house", state: "todo" }
-    ]
-  };
+const form = {
+  name: "Diego",
+  email: "drborges.cic@gmail.com",
+  active: true,
+  address: {
+    street: "Walnut St.",
+    city: "Philly"
+  },
+  todos: [
+    { id: 1, text: "Walk the dog", state: "doing" },
+    { id: 2, text: "Do the dishes", state: "done" },
+    { id: 3, text: "Clean the house", state: "todo" }
+  ]
+};
 
+function App() {
+  const [submitting, setSubmitting] = useState(false);
   const [todos, swap] = useSwappable(form.todos);
 
   const handleSwap = () => {
@@ -84,14 +113,19 @@ function App() {
   };
 
   const handleSubmit = data => {
+    setSubmitting(true);
+    setTimeout(() => setSubmitting(false), 2000);
     console.log("Submit", data);
   };
 
   return (
     <div className="App">
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit} disabled={submitting}>
         <FormFields {...form} todos={todos} onSwap={handleSwap} />
-        <Button type="submit">Save</Button>
+        <Button type="submit" disabled={submitting}>
+          Save
+        </Button>
+        {submitting && <span>Submitting...</span>}
       </Form>
     </div>
   );

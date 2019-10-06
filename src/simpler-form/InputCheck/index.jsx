@@ -2,8 +2,8 @@ import React from "react";
 
 import useScopedInput from "../useScopedInput";
 
-const InputCheck = ({ inputRef, name, index, defaultValue, ...props }) => {
-  const input = useScopedInput(name, index, defaultValue);
+const InputCheck = ({ inputRef, name, defaultValue, ...props }) => {
+  const { input } = useScopedInput(name, defaultValue);
   return (
     <input
       {...props}
